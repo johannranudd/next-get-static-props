@@ -1,8 +1,10 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { StyledDiv } from '../styles/index.styles';
+import fs from 'fs/promises';
+import path from 'path';
 
-export default function Home() {
+export default function Home(props) {
   const test = [1, 2, 3, 4, 5, 6, 7, 8];
 
   return (
@@ -15,8 +17,8 @@ export default function Home() {
       <section className='section-center'>
         <h1>second commit</h1>
         <ul>
-          {test.map((item) => {
-            return <ListItem key={item} item={item} />;
+          {test.map((item, index) => {
+            return <ListItem key={index} item={item} />;
           })}
         </ul>
       </section>
@@ -24,8 +26,18 @@ export default function Home() {
   );
 }
 
+export async function getStaticProps(props) {
+  const filePath = path.join(process.cwd(), 'data', 'dummy.data.json');
+  await fs.readFile(filePath);
+  // console.log(path);
+  return {
+    props: {},
+  };
+}
+
 const ListItem = () => {
   return (
+    // <li>hello</li>
     <li>
       <img
         src='https://cdn.pixabay.com/photo/2022/01/23/16/29/banana-peel-6961349_1280.jpg'
