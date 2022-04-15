@@ -1,7 +1,7 @@
 import Head from 'next/head';
 import Image from 'next/image';
 import { StyledDiv } from '../styles/index.styles';
-// import './../styles/globals.css';
+
 export default function Home() {
   const test = [1, 2, 3, 4, 5, 6, 7, 8];
 
