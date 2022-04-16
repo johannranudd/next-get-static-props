@@ -6,6 +6,9 @@ import path from 'path';
 
 export default function Home(props) {
   const test = [1, 2, 3, 4, 5, 6, 7, 8];
+  const { data } = props;
+  // console.log(props.data.products);
+  // console.log(data);
 
   return (
     <StyledDiv>
@@ -17,7 +20,7 @@ export default function Home(props) {
       <section className='section-center'>
         <h1>second commit</h1>
         <ul>
-          {test.map((item, index) => {
+          {data.map((item, index) => {
             return <ListItem key={index} item={item} />;
           })}
         </ul>
@@ -26,25 +29,18 @@ export default function Home(props) {
   );
 }
 
-export async function getStaticProps(props) {
+export async function getStaticProps(context) {
+  console.log('hello from the backend');
+  console.log(context);
   const filePath = path.join(process.cwd(), 'data', 'dummy.data.json');
-  await fs.readFile(filePath);
-  // console.log(path);
+  const jsonData = await fs.readFile(filePath);
+  const data = JSON.parse(jsonData);
   return {
-    props: {},
+    props: { data: data.products },
+    revalidate: 10,
   };
 }
 
 const ListItem = () => {
-  return (
-    // <li>hello</li>
-    <li>
-      <img
-        src='https://cdn.pixabay.com/photo/2022/01/23/16/29/banana-peel-6961349_1280.jpg'
-        alt=''
-      />
-      <p>caption</p>
-      <button>button</button>
-    </li>
-  );
+  return <li>hello</li>;
 };
