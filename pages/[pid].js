@@ -3,6 +3,7 @@ import fs from 'fs/promises';
 
 const DynamicPage = (props) => {
   const { loadedProduct } = props;
+  // console.log(loadedProduct);
 
   return (
     <li>
@@ -12,6 +13,14 @@ const DynamicPage = (props) => {
   );
 };
 
+async function getData() {
+  const filePath = path.join(process.cwd(), 'data', 'dummy.data.json');
+  const jsonData = await fs.readFile(filePath);
+  const data = JSON.parse(jsonData);
+
+  return data;
+}
+
 export async function getStaticProps(context) {
   console.log('hello from the backend 2');
 
@@ -19,9 +28,7 @@ export async function getStaticProps(context) {
 
   const productId = params.pid;
 
-  const filePath = path.join(process.cwd(), 'data', 'dummy.data.json');
-  const jsonData = await fs.readFile(filePath);
-  const data = JSON.parse(jsonData);
+  const data = await getData();
 
   const product = data.products.find((product) => product.id === productId);
 
@@ -33,13 +40,19 @@ export async function getStaticProps(context) {
 }
 
 export async function getStaticPaths() {
+  const data = await getData();
+
+  const dataIds = data.products.map((product) => {
+    return product.id;
+  });
+  console.log('ids', dataIds);
+  const newPath = dataIds.map((id) => {
+    return { params: { pid: id } };
+  });
+  console.log('newPath', newPath);
+
   return {
-    paths: [
-      { params: { pid: 'p1' } },
-      { params: { pid: 'p2' } },
-      { params: { pid: 'p3' } },
-      { params: { pid: 'p4' } },
-    ],
+    paths: newPath,
     fallback: false,
   };
 }
