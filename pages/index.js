@@ -3,12 +3,10 @@ import Image from 'next/image';
 import { StyledDiv } from '../styles/index.styles';
 import fs from 'fs/promises';
 import path from 'path';
+import Link from 'next/link';
 
 export default function Home(props) {
-  const test = [1, 2, 3, 4, 5, 6, 7, 8];
   const { data } = props;
-  // console.log(props.data.products);
-  // console.log(data);
 
   return (
     <StyledDiv>
@@ -21,7 +19,7 @@ export default function Home(props) {
         <h1>second commit</h1>
         <ul>
           {data.map((item, index) => {
-            return <ListItem key={index} item={item} />;
+            return <ListItem key={item.id} {...item} />;
           })}
         </ul>
       </section>
@@ -30,11 +28,12 @@ export default function Home(props) {
 }
 
 export async function getStaticProps(context) {
-  console.log('hello from the backend');
-  console.log(context);
+  console.log('hello from the backend 1');
+
   const filePath = path.join(process.cwd(), 'data', 'dummy.data.json');
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
+
   return {
     props: { data: data.products },
     revalidate: 10,
@@ -42,6 +41,17 @@ export async function getStaticProps(context) {
   };
 }
 
-const ListItem = () => {
-  return <li>hello</li>;
+const ListItem = (item) => {
+  const { id, title } = item;
+
+  return (
+    <>
+      <Link href={`/${id}`}>
+        <div>
+          <p>{id}</p>
+          <p>{title}</p>
+        </div>
+      </Link>
+    </>
+  );
 };
