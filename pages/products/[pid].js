@@ -3,6 +3,14 @@ import fs from 'fs/promises';
 
 const DynamicPage = (props) => {
   const { loadedProduct } = props;
+
+  if (!loadedProduct) {
+    console.log('not loaded');
+    return <h1>LOADING...</h1>;
+  }
+  // else {
+  //   console.log('loaded');
+  // }
   // console.log(loadedProduct);
 
   return (
@@ -32,6 +40,10 @@ export async function getStaticProps(context) {
 
   const product = data.products.find((product) => product.id === productId);
 
+  if (!product) {
+    return { notFound: true };
+  }
+
   return {
     props: {
       loadedProduct: product,
@@ -45,15 +57,13 @@ export async function getStaticPaths() {
   const dataIds = data.products.map((product) => {
     return product.id;
   });
-  console.log('ids', dataIds);
   const newPath = dataIds.map((id) => {
     return { params: { pid: id } };
   });
-  console.log('newPath', newPath);
 
   return {
     paths: newPath,
-    fallback: false,
+    fallback: true,
   };
 }
 

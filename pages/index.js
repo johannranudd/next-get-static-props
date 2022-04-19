@@ -34,6 +34,14 @@ export async function getStaticProps(context) {
   const jsonData = await fs.readFile(filePath);
   const data = JSON.parse(jsonData);
 
+  if (!data) {
+    return {
+      redirect: {
+        destination: '/no-data',
+      },
+    };
+  }
+
   return {
     props: { data: data.products },
     revalidate: 10,
@@ -46,7 +54,7 @@ const ListItem = (item) => {
 
   return (
     <>
-      <Link href={`/${id}`}>
+      <Link href={`/products/${id}`}>
         <div>
           <p>{id}</p>
           <p>{title}</p>
